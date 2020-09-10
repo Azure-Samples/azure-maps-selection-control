@@ -26,7 +26,7 @@ A control that provides a form for requesting a route range. Adds a marker to th
 
 | Name | Return type | Description |
 |------|-------------|-------------|
-| `dataselected` | `azmaps.Shape[]` | Event fired when shapes are selected from the specified data source. |
+| `dataselected` | `atlas.Shape[]` | Event fired when shapes are selected from the specified data source. |
 
 **Usage**
 
@@ -78,7 +78,7 @@ Options for the SelectionControlOptions.
 | `strokeColor` | `string` | The color to outline of the search area with. Default: `'#F2C811'` |
 | `strokeWidth` | `number` | The width of the outline of the search area: Default: `1` |
 | `selectionModes` | `SelectionControlMode[]` \| `'all'` | The selection modes to display in the selection control. Default: `'all'` |
-| `source` | `azmaps.source.DataSource` | The data source to query data from.  |
+| `source` | `atlas.source.DataSource` | The data source to query data from.  |
 | `style` | `atlas.ControlStyle` | The style of the control. Can be; `light`, `dark`, or `auto`. When set to auto, the style will change based on the map style. Overridden if device is in high contrast mode. Default `light`. |
 
 ## RouteRangeControl class
@@ -105,7 +105,7 @@ This control only uses a `non-fixed` position when being added to the map. If a 
 |------|-------------|-------------|
 | `dispose()` | | Disposes the control. |
 | `getOptions()` | `RouteRangeControlOptions` | Gets the options of the control. |
-| `setMarkerOptions(options: azmaps.HtmlMarkerOptions)` | | Sets the options for the marker. |
+| `setMarkerOptions(options: atlas.HtmlMarkerOptions)` | | Sets the options for the marker. |
 | `setVisible(isVisible: boolean)` | | Hides or shows the route range control. |
 
 **Events**
@@ -113,8 +113,8 @@ This control only uses a `non-fixed` position when being added to the map. If a 
 | Name | Return type | Description |
 |------|-------------|-------------|
 | `error` | `string` | Event fired when an error occurs. |
-| `showrange` | `azmaps.data.Polygon | azmaps.data.MultiPolygon` | Event fired when a route range is calculated and the showArea option is set to true. |
-| `rangecalculated` | `azmaps.data.Polygon | azmaps.data.MultiPolygon` | Event fired when a route range has been calculated. |
+| `showrange` | `atlas.data.Polygon | atlas.data.MultiPolygon` | Event fired when a route range is calculated and the showArea option is set to true. |
+| `rangecalculated` | `atlas.data.Polygon | atlas.data.MultiPolygon` | Event fired when a route range has been calculated. |
 
 
 **Usage**
@@ -188,6 +188,6 @@ The following static functions have been added to the `atlas.math` namespace.
 | Name | Return type | Description |
 |------|-------------|-------------|
 | `convertWeight(weight: number, fromUnits: string | WeightUnits, toUnits: string | WeightUnits, decimals?: number)` | `number` | Converts a weight value from one unit to another. Supported units: kilograms, pounds, metricTon, longTon, shortTon. |
-| `pointsWithinPolygon(points: azmaps.data.Feature<azmaps.data.Point, any>[], searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)` | `azmaps.data.Feature<azmaps.data.Point, any>[]` | Gets all point features that are within a polygon. |
-| `shapePointsWithinPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)` | `azmaps.Shape[]` | Gets all shapes that have point features that are within a polygon. |
+| `pointsWithinPolygon(points: atlas.data.Feature<atlas.data.Point, any>[], searchArea: atlas.data.Polygon | atlas.data.MultiPolygon | atlas.data.Feature<atlas.data.Geometry, any> | atlas.Shape)` | `atlas.data.Feature<atlas.data.Point, any>[]` | Gets all point features that are within a polygon. |
+| `shapePointsWithinPolygon(shapes: atlas.Shape[] | atlas.source.DataSource, searchArea: atlas.data.Polygon | atlas.data.MultiPolygon | atlas.data.Feature<atlas.data.Geometry, any> | atlas.Shape)` | `atlas.Shape[]` | Gets all shapes that have point features that are within a polygon. |
  
