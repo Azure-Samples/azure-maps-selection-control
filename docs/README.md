@@ -113,8 +113,8 @@ This control only uses a `non-fixed` position when being added to the map. If a 
 | Name | Return type | Description |
 |------|-------------|-------------|
 | `error` | `string` | Event fired when an error occurs. |
-| `showrange` | `atlas.data.Polygon | atlas.data.MultiPolygon` | Event fired when a route range is calculated and the showArea option is set to true. |
-| `rangecalculated` | `atlas.data.Polygon | atlas.data.MultiPolygon` | Event fired when a route range has been calculated. |
+| `showrange` | `atlas.data.Polygon` \| `atlas.data.MultiPolygon` | Event fired when a route range is calculated and the showArea option is set to true. |
+| `rangecalculated` | `atlas.data.Polygon` \| `atlas.data.MultiPolygon` | Event fired when a route range has been calculated. |
 
 
 **Usage**
@@ -187,7 +187,7 @@ The following static functions have been added to the `atlas.math` namespace.
 
 | Name | Return type | Description |
 |------|-------------|-------------|
-| `convertWeight(weight: number, fromUnits: string | WeightUnits, toUnits: string | WeightUnits, decimals?: number)` | `number` | Converts a weight value from one unit to another. Supported units: kilograms, pounds, metricTon, longTon, shortTon. |
-| `pointsWithinPolygon(points: atlas.data.Feature<atlas.data.Point, any>[], searchArea: atlas.data.Polygon | atlas.data.MultiPolygon | atlas.data.Feature<atlas.data.Geometry, any> | atlas.Shape)` | `atlas.data.Feature<atlas.data.Point, any>[]` | Gets all point features that are within a polygon. |
-| `shapePointsWithinPolygon(shapes: atlas.Shape[] | atlas.source.DataSource, searchArea: atlas.data.Polygon | atlas.data.MultiPolygon | atlas.data.Feature<atlas.data.Geometry, any> | atlas.Shape)` | `atlas.Shape[]` | Gets all shapes that have point features that are within a polygon. |
+| `convertWeight(weight: number, fromUnits: string \| WeightUnits, toUnits: string \| WeightUnits, decimals?: number)` | `number` | Converts a weight value from one unit to another. Supported units: kilograms, pounds, metricTon, longTon, shortTon. |
+| `pointsWithinPolygon(points: atlas.data.Feature<atlas.data.Point, any>[], searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.data.Feature<atlas.data.Point, any>[]` | Gets all point features that are within a polygon. |
+| `shapePointsWithinPolygon(shapes: atlas.Shape[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.Shape[]` | Gets all shapes that have point features that are within a polygon. |
  
