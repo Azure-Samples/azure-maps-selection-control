@@ -32,7 +32,7 @@ A control that provides a form for requesting a route range. Adds a marker to th
 
 The following shows how to create an instance of the `SelectionControl` class, connect it to a data source and add it to a map.
 
-```JavaScript
+```javascript
 //Create a data source and add it to the map.
 datasource = new atlas.source.DataSource();
 map.sources.add(datasource);
@@ -121,7 +121,7 @@ This control only uses a `non-fixed` position when being added to the map. If a 
 
 The `RouteRangeControl` class is used by the selection control under the hood, but it can also be used directly if this is the only control needed. Here is an example.
 
-```JavaScript
+```javascript
 //Create an instance of the route range control.
 var control = new atlas.control.RouteRangeControl({
     style: 'auto'
