@@ -271,7 +271,7 @@ declare module "azure-maps-control" {
          * @param target The class to add the event for.
          * @param callback The event handler callback.
          */
-        add(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: atlas.control.SelectionControlEvents) => void): void;
+        add(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: azmaps.Shape[]) => void): void;
 
         /**
          * Adds an event to a class once.
@@ -279,7 +279,7 @@ declare module "azure-maps-control" {
          * @param target The class to add the event for.
          * @param callback The event handler callback.
          */
-        addOnce(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: atlas.control.SelectionControlEvents) => void): void;
+        addOnce(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: azmaps.Shape[]) => void): void;
          
         /**
          * Adds an event to a class.

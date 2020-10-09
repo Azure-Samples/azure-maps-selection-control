@@ -3,7 +3,7 @@ import { Utils } from '../helpers/Utils';
 
 /** A class that manages the style of a control. Add's 'light' or 'dark' as a CSS class to the container. */
 export class ControlStyler {
-        /****************************
+    /****************************
      * Private Properties
      ***************************/
 
@@ -24,15 +24,7 @@ export class ControlStyler {
     constructor(container: HTMLElement, map: azmaps.Map, style: string) {
         this._container = container;
         this._map = map;
-        this._style = style;
-
-        // Set the style or add the auto listener.
-        if (style.toLowerCase() === azmaps.ControlStyle.auto) {
-            this._onStyleChange();
-            this._map.events.add('styledata', this._onStyleChange);
-        } else {
-            container.classList.add(style);
-        }
+        this.setStyle(style);
     }
 
     /****************************
@@ -66,6 +58,32 @@ export class ControlStyler {
         this._map = map;
         if(map && this._style === azmaps.ControlStyle.auto){
             map.events.add('styledata', this._onStyleChange);
+        }
+    }
+
+    /**
+     * Sets the style.
+     * @param style The new style.
+     */
+    public setStyle(style: string) {
+        const self = this;
+
+        if(style !== self._style){
+            self._container.classList.remove(style);
+
+            if(self._style === azmaps.ControlStyle.auto){
+                self._map.events.remove('styledata', self._onStyleChange);
+            }
+
+            // Set the style or add the auto listener.
+            if (style.toLowerCase() === azmaps.ControlStyle.auto) {
+                self._onStyleChange();
+                self._map.events.add('styledata', self._onStyleChange);
+            } else {
+                self._container.classList.add(style);
+            }
+
+            self._style = style;
         }
     }
 
