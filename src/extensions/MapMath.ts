@@ -76,7 +76,7 @@ export class MapMath {
                 if(s.getType() === 'Point'){
                     id = s.getId();
                     idLoookupTable[id] = s;
-                    points.push(new azmaps.data.Feature(new azmaps.data.Point(<azmaps.data.Position>s.getCoordinates()), { id: id }, id));
+                    points.push(new azmaps.data.Feature(new azmaps.data.Point(<azmaps.data.Position>s.getCoordinates()), null, id));
                 }
             }
         

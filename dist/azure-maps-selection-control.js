@@ -640,7 +640,7 @@ MIT License
                     if (s.getType() === 'Point') {
                         id = s.getId();
                         idLoookupTable_1[id] = s;
-                        points.push(new azmaps.data.Feature(new azmaps.data.Point(s.getCoordinates()), { id: id }, id));
+                        points.push(new azmaps.data.Feature(new azmaps.data.Point(s.getCoordinates()), null, id));
                     }
                 }
                 //Filter the points.
