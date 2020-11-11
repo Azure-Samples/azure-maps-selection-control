@@ -640,7 +640,7 @@ MIT License
                     if (s.getType() === 'Point') {
                         id = s.getId();
                         idLoookupTable_1[id] = s;
-                        points.push(new azmaps.data.Feature(new azmaps.data.Point(s.getCoordinates()), { id: id }));
+                        points.push(new azmaps.data.Feature(new azmaps.data.Point(s.getCoordinates()), { id: id }, id));
                     }
                 }
                 //Filter the points.
@@ -3735,15 +3735,7 @@ MIT License
             };
             this._container = container;
             this._map = map;
-            this._style = style;
-            // Set the style or add the auto listener.
-            if (style.toLowerCase() === azmaps.ControlStyle.auto) {
-                this._onStyleChange();
-                this._map.events.add('styledata', this._onStyleChange);
-            }
-            else {
-                container.classList.add(style);
-            }
+            this.setStyle(style);
         }
         /****************************
          * Public Methods
@@ -3772,6 +3764,28 @@ MIT License
             this._map = map;
             if (map && this._style === azmaps.ControlStyle.auto) {
                 map.events.add('styledata', this._onStyleChange);
+            }
+        };
+        /**
+         * Sets the style.
+         * @param style The new style.
+         */
+        ControlStyler.prototype.setStyle = function (style) {
+            var self = this;
+            if (style !== self._style) {
+                self._container.classList.remove(style);
+                if (self._style === azmaps.ControlStyle.auto) {
+                    self._map.events.remove('styledata', self._onStyleChange);
+                }
+                // Set the style or add the auto listener.
+                if (style.toLowerCase() === azmaps.ControlStyle.auto) {
+                    self._onStyleChange();
+                    self._map.events.add('styledata', self._onStyleChange);
+                }
+                else {
+                    self._container.classList.add(style);
+                }
+                self._style = style;
             }
         };
         /****************************
