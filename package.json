@@ -1,6 +1,6 @@
 {
   "name": "azure-maps-selection-control",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Azure Maps Web SDK module that provides controls for selecting data in a data source using drawing tools or by requesting a route range polygon.",
   "keywords": [
     "azure",
@@ -20,6 +20,9 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "dependencies": {
+    "@turf/boolean-contains": "^6.0.1",
+    "@turf/boolean-crosses": "^6.0.1",
+    "@turf/boolean-overlap": "^6.0.1",
     "@turf/points-within-polygon": "^5.1.5",
     "azure-maps-control": "^2.0.25",
     "azure-maps-drawing-tools": "^0.1.4"

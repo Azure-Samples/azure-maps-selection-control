@@ -8,7 +8,7 @@ export enum SelectionControlMode {
     rectangle = 'rectangle',
 
     /** Draw a polygon area to select in. */
-   polygon = 'polygon',
+    polygon = 'polygon',
 
     /** Generates a selection area based on travel distance or time. */
     routeRange = 'routeRange'

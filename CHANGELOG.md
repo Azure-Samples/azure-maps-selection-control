@@ -1,7 +1,15 @@
 ## azure-maps-selection-control Changelog
 
+<a name="0.0.2"></a>
+# 0.0.2 (2020-11-30)
+
+**Features**
+
+- Added `shapeSelectionMode` to selection control and support for selecting any type of shape geometry.
+- Added `shapesIntersectPolygon` function to atlas.math.
+
 <a name="0.0.1"></a>
-# 0.0.1 (2020-09-209)
+# 0.0.1 (2020-09-20)
 
 **Features**
 

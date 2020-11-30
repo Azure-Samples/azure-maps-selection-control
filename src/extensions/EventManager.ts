@@ -30,7 +30,7 @@ declare module "azure-maps-control" {
          * @param callback The event handler callback.
          */
         addOnce(eventType: "dataselected", target: SelectionControl, callback: (e: azmaps.Shape[]) => void): void;
-         
+                 
         /**
          * Adds an event to a class.
          * @param eventType The event name.

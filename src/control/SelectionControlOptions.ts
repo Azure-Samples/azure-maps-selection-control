@@ -1,6 +1,7 @@
 import * as azmaps from "azure-maps-control";
 import { RouteRangeControlOptions } from './RouteRangeControlOptions';
 import { SelectionControlMode } from '../Enums/SelectionControlMode';
+import { ShapeSelectionMode } from 'src/Enums/ShapeSelectionMode';
 
 /** Options for the SelectionControlOptions. */
 export interface SelectionControlOptions {
@@ -40,4 +41,7 @@ export interface SelectionControlOptions {
 
     /** Options for the underlying route range control. */
     routeRangeOptions?: RouteRangeControlOptions;
+
+    /** Specifies the type of shapes to select from the data source. Default: 'any' */
+    shapeSelectionMode?: ShapeSelectionMode | string;
 }

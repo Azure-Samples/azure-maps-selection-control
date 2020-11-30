@@ -31,7 +31,8 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
         strokeWidth: 1,
         persistSearchArea: false,
         routeRangeMinMapSize: [325, 200],
-        routeRangeOptions: {}
+        routeRangeOptions: {},
+        shapeSelectionMode: 'any'
     };
 
     private _map: azmaps.Map;
@@ -134,7 +135,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
        
         map.events.add('drawingcomplete', dm, self._searchArea);
 
-        //WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
+        //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
         map.events.add('drawingchanged', dm, self._copyDrawnShape);
 
         //Customize the drawing styles.
@@ -202,7 +203,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
             self._map.events.remove('resize', self._mapResized);  
             self._map.sources.remove(self._rangeDataSource);
 
-            //WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
+            //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
             self._map.events.remove('drawingchanged',  self._drawingManager, self._copyDrawnShape);
 
             if(self._rangeLayers){
@@ -225,7 +226,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
      ***************************/
 
     /**
-     * WORKAROUND: Remove this when the drawing tools properly support polygon previews.
+     * //TODO: WORKAROUND: Remove this when the drawing tools properly support polygon previews.
      * @param shape Shape that is being drawn.
      */
     private _copyDrawnShape = (shape) => {
@@ -369,7 +370,14 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
         const source = self._options.source;
 
         if(source && searchArea){
-            const shapes = MapMath.shapePointsWithinPolygon(source.getShapes(), searchArea);            
+            let shapes: azmaps.Shape[];
+            
+            if(self._options.shapeSelectionMode === 'point'){
+                shapes = MapMath.shapePointsWithinPolygon(source.getShapes(), searchArea);                
+            } else {
+                shapes = MapMath.shapesIntersectPolygon(source.getShapes(), searchArea);
+            }
+
             self._invokeEvent('dataselected', shapes);
         }
 

@@ -11,7 +11,7 @@ products:
 
 # Azure Maps Selection Control module
 
-An Azure Maps Web SDK module that provides controls for selecting data in a data source using drawing tools or by requesting a route range polygon.
+An Azure Maps Web SDK module that provides controls for selecting data in a data source using drawing tools or by requesting a route range polygon. By default it will select any geometry that intersects the search area. Use the `shapeSelectionMode` to limit the type of geometries that are selected from the data source.
 
 This module requires the Azure Maps drawing tools module to also be loaded in the app. 
 

@@ -1,3 +1,4 @@
+import atlas, * as azmaps from 'azure-maps-control';
 import { SimpleBinding } from './SimpleBinding';
 
 /** Object containing details for creating a DOM element. */
@@ -159,5 +160,55 @@ export class Utils {
         }
 
         return self.isDateTimeSupported;
+    }
+
+    /**
+     * Gets a polygon from a shape, feature, or polyogn object.
+     * @param shape The shape to get the polygon from.
+     */
+    public static getPolygon(shape: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): azmaps.data.Polygon | azmaps.data.MultiPolygon {
+        let poly: azmaps.data.Polygon | azmaps.data.MultiPolygon;
+
+        if(shape instanceof azmaps.Shape){
+            //If the shape is a circle, create a polygon from its circle coordinates.
+            if (shape.isCircle()) {
+                poly = new azmaps.data.Polygon([shape.getCircleCoordinates()]);
+            } else if (shape.getType().indexOf('Polygon') > -1){
+                poly = <azmaps.data.Polygon>shape.toJson().geometry;
+            }
+        } else {      
+            const f = <azmaps.data.Feature<azmaps.data.Geometry, any>>shape;
+
+            if(f.type === 'Feature') {
+                if(f.geometry.type === 'Point' && f.properties.subType === 'Circle' && typeof f.properties.radius === 'number'){
+                    poly = new azmaps.data.Polygon(azmaps.math.getRegularPolygonPath((f.geometry as azmaps.data.Point).coordinates, f.properties.radius, 72, 'meters'))
+                } else if(f.geometry.type.indexOf('Polygon') > -1) {
+                    poly = <azmaps.data.Polygon>f.geometry;
+                }
+            } 
+            
+            if(f.type.indexOf('Polygon') !== -1) {
+                poly = <azmaps.data.Polygon>shape;
+            }
+        }
+
+        return poly;
+    }
+
+    /**
+     * Retrieves the geometry of a shape. Circle is converted to a polygon feature.
+     * @param shape Shape to retrieve geometry from.
+     */
+    public static getGeometry(shape: azmaps.Shape): azmaps.data.Geometry {
+        if(shape instanceof azmaps.Shape){
+            //If the shape is a circle, create a polygon from its circle coordinates.
+            if (shape.isCircle()) {
+                return new azmaps.data.Polygon([shape.getCircleCoordinates()]);
+            }
+
+            return shape.toJson().geometry;
+        }
+
+        return null;
     }
 }

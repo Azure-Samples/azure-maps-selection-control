@@ -136,6 +136,14 @@ declare namespace atlas {
         export function shapePointsWithinPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): azmaps.Shape[];
 
         /**
+         * Gets all shapes that are intersect a polygon search area     
+         * @param shapes Data source or array of shapes with geometries to filter.
+         * @param searchArea The polygon search area to check for intersection with.
+         * @param shapeSelectionMode Limits what type of shapes can be selected.
+         */
+        export function shapesIntersectPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape, shapeSelectionMode?: ShapeSelectionMode | string): azmaps.Shape[];
+
+        /**
          * Converts a weight value from one unit to another.
          * Supported units: kilograms, pounds, metricTon, longTon, shortTon
          * @param weight The weight value to convert.
@@ -214,7 +222,10 @@ declare namespace atlas {
         routeRangeMinMapSize?: [number, number];
 
         /** Options for the underlying route range control. */
-        routeRangeOptions?: RouteRangeControlOptions;
+        routeRangeOptions?: RouteRangeControlOptions;       
+
+        /** Specifies the type of shapes to select from the data source. Default: 'any' */
+        shapeSelectionMode?: ShapeSelectionMode | string;
     }
     
     /** Units of weight measurements */
@@ -248,6 +259,21 @@ declare namespace atlas {
 
         /** Generates a selection area based on travel distance or time. */
         routeRange = 'routeRange'
+    }
+
+    /** Type of shapes to allow the SelectionControl to select. */
+    export enum ShapeSelectionMode {
+        /** Only allow point selection. */
+        point = 'point',
+        
+        /** Only allow line selection. */
+        line = 'line',
+
+        /** Only allow polygon selection. */
+        polygon = 'polygon',
+
+        /** Any shape; point, line, polygon. */
+        any = 'any'
     }
 }
 

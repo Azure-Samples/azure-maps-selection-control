@@ -78,8 +78,24 @@ Options for the SelectionControlOptions.
 | `strokeColor` | `string` | The color to outline of the search area with. Default: `'#F2C811'` |
 | `strokeWidth` | `number` | The width of the outline of the search area: Default: `1` |
 | `selectionModes` | `SelectionControlMode[]` \| `'all'` | The selection modes to display in the selection control. Default: `'all'` |
+| `shapeSelectionMode` | `ShapeSelectionMode` | Specifies the type of shapes to select from the data source. Default: `'any'` |
 | `source` | `atlas.source.DataSource` | The data source to query data from.  |
 | `style` | `atlas.ControlStyle` | The style of the control. Can be; `light`, `dark`, or `auto`. When set to auto, the style will change based on the map style. Overridden if device is in high contrast mode. Default `light`. |
+
+### ShapeSelectionMode enum
+
+Namespace: `atlas`
+
+Type of shapes to allow the SelectionControl to select.
+
+**Properties** 
+
+| Name | Value | Description |
+|------|-------|-------------|
+| `any` | `'any'` | Any shape; point, line, polygon. |
+| `point` | `'point'` | Only allow point selection. |
+| `line` | `'line'` | Only allow line selection. |
+| `polygon` | `'polygon'` | Only allow polygon selection. |
 
 ## RouteRangeControl class
 
@@ -190,4 +206,6 @@ The following static functions have been added to the `atlas.math` namespace.
 | `convertWeight(weight: number, fromUnits: string \| WeightUnits, toUnits: string \| WeightUnits, decimals?: number)` | `number` | Converts a weight value from one unit to another. Supported units: kilograms, pounds, metricTon, longTon, shortTon. |
 | `pointsWithinPolygon(points: atlas.data.Feature<atlas.data.Point, any>[], searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.data.Feature<atlas.data.Point, any>[]` | Gets all point features that are within a polygon. |
 | `shapePointsWithinPolygon(shapes: atlas.Shape[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.Shape[]` | Gets all shapes that have point features that are within a polygon. |
+| `shapesIntersectPolygon(shapes: atlas.Shape[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape, shapeSelectionMode?: ShapeSelectionMode | string)` | `atlas.Shape[]` | Gets all shapes that are intersect a polygon search area. Optionally limit the type of shapes that are selected. |
+
  
