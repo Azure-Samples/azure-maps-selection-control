@@ -184,6 +184,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
      */
     public onRemove(): void {
         const self = this;
+        const map = self._map;
 
         self.clear();
 
@@ -192,22 +193,25 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
             self._container = null;
         }
 
-        if(self._map){
-            if(self._rangeControl){                         
-                self._map.events.remove('showrange', self._rangeControl, self._displayRangePolygon);
-                self._map.events.remove('rangecalculated', self._rangeControl, self._searchArea);
-                self._map.controls.remove(self._rangeControl);
+        if(map){
+            const mapEvents = map.events;
+            const rangeControl = self._rangeControl;
+
+            if(rangeControl){                         
+                mapEvents.remove('showrange', rangeControl, self._displayRangePolygon);
+                mapEvents.remove('rangecalculated', rangeControl, self._searchArea);
+                map.controls.remove(rangeControl);
                 self._rangeControl = null;
             }
 
-            self._map.events.remove('resize', self._mapResized);  
-            self._map.sources.remove(self._rangeDataSource);
+            mapEvents.remove('resize', self._mapResized);  
+            map.sources.remove(self._rangeDataSource);
 
             //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
-            self._map.events.remove('drawingchanged',  self._drawingManager, self._copyDrawnShape);
+            mapEvents.remove('drawingchanged', self._drawingManager, self._copyDrawnShape);
 
             if(self._rangeLayers){
-                self._map.layers.remove(self._rangeLayers);
+                map.layers.remove(self._rangeLayers);
             }
         }
 
@@ -325,7 +329,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
         const rangeOptions: RouteRangeControlOptions = {
             isVisible: false,
             markerOptions: {
-                color: self._options.fillColor
+                color: opts.fillColor
             },
             style: opts.style || azmaps.ControlStyle.light,
             collapsible: true,
@@ -342,15 +346,16 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
 
         const routeRangeControl = new RouteRangeControl(rangeOptions);
 
-        self._map.controls.add(routeRangeControl);
+        const map = self._map;
+        map.controls.add(routeRangeControl);
 
         self._rangeControl = routeRangeControl;
 
-        self._map.events.add('resize', self._mapResized);  
+        map.events.add('resize', self._mapResized);  
         self._mapResized();
 
-        self._map.events.add('rangecalculated', self._rangeControl, self._searchArea);
-        self._map.events.add('showrange', self._rangeControl, self._displayRangePolygon);
+        map.events.add('rangecalculated', routeRangeControl, self._searchArea);
+        map.events.add('showrange', routeRangeControl, self._displayRangePolygon);
     }
 
     /**
@@ -370,15 +375,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
         const source = self._options.source;
 
         if(source && searchArea){
-            let shapes: azmaps.Shape[];
-            
-            if(self._options.shapeSelectionMode === 'point'){
-                shapes = MapMath.shapePointsWithinPolygon(source.getShapes(), searchArea);                
-            } else {
-                shapes = MapMath.shapesIntersectPolygon(source.getShapes(), searchArea);
-            }
-
-            self._invokeEvent('dataselected', shapes);
+            self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(source.getShapes(), searchArea));
         }
 
         //Allow a bit of a delay before removing the drawn area.
@@ -406,7 +403,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
             self.clear();
 
             if(name === 'routeRange') {
-                this._rangeControl.setVisible(true);
+                self._rangeControl.setVisible(true);
             } else {
                 self._drawingManager.setOptions({
                     mode: <azmdraw.drawing.DrawingMode>('draw-' + name)
@@ -419,9 +416,10 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
 
     /** Event handler for when the map resizes. */
     private _mapResized = () => {
-        const minSize = this._options.routeRangeMinMapSize;
-        const mapSize = this._map.getMapContainer().getBoundingClientRect();
+        const self = this;
+        const minSize = self._options.routeRangeMinMapSize;
+        const mapSize = self._map.getMapContainer().getBoundingClientRect();
 
-        this._routeRangeBtn.style.display = (mapSize.width >= minSize[0] && mapSize.height >= minSize[1])? '': 'none';
+        self._routeRangeBtn.style.display = (mapSize.width >= minSize[0] && mapSize.height >= minSize[1])? '': 'none';
     };
 }

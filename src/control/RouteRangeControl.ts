@@ -282,10 +282,13 @@ export class RouteRangeControl extends azmaps.internal.EventEmitter<RouteRangeCo
         const self = this;
         self._map = map;
         
-        self._marker.setOptions({ visible: self._options.isVisible });
-        map.markers.add(self._marker);
-        map.events.add('dragstart', self._marker, self._onMarkerDargStart);
-        map.events.add('dragend', self._marker, self._onMarkerDragged);
+        const marker = self._marker;
+        marker.setOptions({ visible: self._options.isVisible });
+        map.markers.add(marker);
+
+        const mapEvents = map.events;
+        mapEvents.add('dragstart', marker, self._onMarkerDargStart);
+        mapEvents.add('dragend', marker, self._onMarkerDragged);
 
         //Get the resource file for the maps language.
         const resx = Localization.getResource(map.getStyle().language);
@@ -308,10 +311,11 @@ export class RouteRangeControl extends azmaps.internal.EventEmitter<RouteRangeCo
      */
     public onRemove(): void {
         const self = this;
+        const container = self._container;
 
-        if (self._container) {
-            self._container.removeEventListener('keydown', this._onContainerKeyDown);
-            self._container.remove();
+        if (container) {
+            container.removeEventListener('keydown', this._onContainerKeyDown);
+            container.remove();
             self._container = null;
         }
 
@@ -321,10 +325,15 @@ export class RouteRangeControl extends azmaps.internal.EventEmitter<RouteRangeCo
         }
 
         self._styler.updateMap(null);
-        self._map.events.remove('resize', self._mapResized);  
-        self._map.events.remove('dragstart', self._marker, self._onMarkerDargStart);
-        self._map.events.remove('dragend', self._marker, self._onMarkerDragged);
-        self._map.markers.remove(self._marker);        
+        
+        const map = self._map;
+        const mapEvents = map.events;
+        const marker = self._marker;
+
+        mapEvents.remove('resize', self._mapResized);  
+        mapEvents.remove('dragstart', marker, self._onMarkerDargStart);
+        mapEvents.remove('dragend', marker, self._onMarkerDragged);
+        map.markers.remove(marker);        
         self._map = null;
     }
 

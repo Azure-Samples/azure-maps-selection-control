@@ -30111,10 +30111,12 @@ MIT License
             }
             var self = this;
             self._map = map;
-            self._marker.setOptions({ visible: self._options.isVisible });
-            map.markers.add(self._marker);
-            map.events.add('dragstart', self._marker, self._onMarkerDargStart);
-            map.events.add('dragend', self._marker, self._onMarkerDragged);
+            var marker = self._marker;
+            marker.setOptions({ visible: self._options.isVisible });
+            map.markers.add(marker);
+            var mapEvents = map.events;
+            mapEvents.add('dragstart', marker, self._onMarkerDargStart);
+            mapEvents.add('dragend', marker, self._onMarkerDragged);
             //Get the resource file for the maps language.
             var resx = Localization.getResource(map.getStyle().language);
             self._resx = resx;
@@ -30133,9 +30135,10 @@ MIT License
          */
         RouteRangeControl.prototype.onRemove = function () {
             var self = this;
-            if (self._container) {
-                self._container.removeEventListener('keydown', this._onContainerKeyDown);
-                self._container.remove();
+            var container = self._container;
+            if (container) {
+                container.removeEventListener('keydown', this._onContainerKeyDown);
+                container.remove();
                 self._container = null;
             }
             if (self._binding) {
@@ -30143,10 +30146,13 @@ MIT License
                 self._binding = null;
             }
             self._styler.updateMap(null);
-            self._map.events.remove('resize', self._mapResized);
-            self._map.events.remove('dragstart', self._marker, self._onMarkerDargStart);
-            self._map.events.remove('dragend', self._marker, self._onMarkerDragged);
-            self._map.markers.remove(self._marker);
+            var map = self._map;
+            var mapEvents = map.events;
+            var marker = self._marker;
+            mapEvents.remove('resize', self._mapResized);
+            mapEvents.remove('dragstart', marker, self._onMarkerDargStart);
+            mapEvents.remove('dragend', marker, self._onMarkerDragged);
+            map.markers.remove(marker);
             self._map = null;
         };
         /**
@@ -30354,23 +30360,17 @@ MIT License
                 self.clear();
                 var source = self._options.source;
                 if (source && searchArea) {
-                    var shapes = void 0;
-                    if (self._options.shapeSelectionMode === 'point') {
-                        shapes = MapMath.shapePointsWithinPolygon(source.getShapes(), searchArea);
-                    }
-                    else {
-                        shapes = MapMath.shapesIntersectPolygon(source.getShapes(), searchArea);
-                    }
-                    self._invokeEvent('dataselected', shapes);
+                    self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(source.getShapes(), searchArea));
                 }
                 //Allow a bit of a delay before removing the drawn area.
                 self._drawingManager.setOptions({ mode: 'idle' });
             };
             /** Event handler for when the map resizes. */
             _this._mapResized = function () {
-                var minSize = _this._options.routeRangeMinMapSize;
-                var mapSize = _this._map.getMapContainer().getBoundingClientRect();
-                _this._routeRangeBtn.style.display = (mapSize.width >= minSize[0] && mapSize.height >= minSize[1]) ? '' : 'none';
+                var self = _this;
+                var minSize = self._options.routeRangeMinMapSize;
+                var mapSize = self._map.getMapContainer().getBoundingClientRect();
+                self._routeRangeBtn.style.display = (mapSize.width >= minSize[0] && mapSize.height >= minSize[1]) ? '' : 'none';
             };
             _this._options = Object.assign(_this._options, options || {});
             _this._rangeDataSource = new azmaps.source.DataSource(null, {
@@ -30466,24 +30466,27 @@ MIT License
          */
         SelectionControl.prototype.onRemove = function () {
             var self = this;
+            var map = self._map;
             self.clear();
             if (self._container) {
                 self._container.remove();
                 self._container = null;
             }
-            if (self._map) {
-                if (self._rangeControl) {
-                    self._map.events.remove('showrange', self._rangeControl, self._displayRangePolygon);
-                    self._map.events.remove('rangecalculated', self._rangeControl, self._searchArea);
-                    self._map.controls.remove(self._rangeControl);
+            if (map) {
+                var mapEvents = map.events;
+                var rangeControl = self._rangeControl;
+                if (rangeControl) {
+                    mapEvents.remove('showrange', rangeControl, self._displayRangePolygon);
+                    mapEvents.remove('rangecalculated', rangeControl, self._searchArea);
+                    map.controls.remove(rangeControl);
                     self._rangeControl = null;
                 }
-                self._map.events.remove('resize', self._mapResized);
-                self._map.sources.remove(self._rangeDataSource);
+                mapEvents.remove('resize', self._mapResized);
+                map.sources.remove(self._rangeDataSource);
                 //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
-                self._map.events.remove('drawingchanged', self._drawingManager, self._copyDrawnShape);
+                mapEvents.remove('drawingchanged', self._drawingManager, self._copyDrawnShape);
                 if (self._rangeLayers) {
-                    self._map.layers.remove(self._rangeLayers);
+                    map.layers.remove(self._rangeLayers);
                 }
             }
             self._styler.updateMap(null);
@@ -30572,7 +30575,7 @@ MIT License
             var rangeOptions = {
                 isVisible: false,
                 markerOptions: {
-                    color: self._options.fillColor
+                    color: opts.fillColor
                 },
                 style: opts.style || azmaps.ControlStyle.light,
                 collapsible: true,
@@ -30585,12 +30588,13 @@ MIT License
                 Object.assign(rangeOptions, opts.routeRangeOptions);
             }
             var routeRangeControl = new RouteRangeControl(rangeOptions);
-            self._map.controls.add(routeRangeControl);
+            var map = self._map;
+            map.controls.add(routeRangeControl);
             self._rangeControl = routeRangeControl;
-            self._map.events.add('resize', self._mapResized);
+            map.events.add('resize', self._mapResized);
             self._mapResized();
-            self._map.events.add('rangecalculated', self._rangeControl, self._searchArea);
-            self._map.events.add('showrange', self._rangeControl, self._displayRangePolygon);
+            map.events.add('rangecalculated', routeRangeControl, self._searchArea);
+            map.events.add('showrange', routeRangeControl, self._displayRangePolygon);
         };
         /**
          * Creates selection mode buttons.
@@ -30599,7 +30603,6 @@ MIT License
          * @param resx Resources.
          */
         SelectionControl.prototype._buildSelectModeBtn = function (name, btnClass, resx) {
-            var _this = this;
             var btn = Utils.createElm('button', {
                 attr: {
                     type: 'button'
@@ -30611,7 +30614,7 @@ MIT License
             btn.onclick = function () {
                 self.clear();
                 if (name === 'routeRange') {
-                    _this._rangeControl.setVisible(true);
+                    self._rangeControl.setVisible(true);
                 }
                 else {
                     self._drawingManager.setOptions({
