@@ -1,5 +1,14 @@
 ## azure-maps-selection-control Changelog
 
+<a name="0.0.3"></a>
+# 0.0.3 (2022-8-10)
+
+**Features**
+
+- Support for vector tile sources.
+- Support for extend GeoJSON Circle feature.
+- Ability to persist the drawn shape.
+
 <a name="0.0.2"></a>
 # 0.0.2 (2020-11-30)
 

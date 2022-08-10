@@ -199,7 +199,7 @@ export class Utils {
      * Retrieves the geometry of a shape. Circle is converted to a polygon feature.
      * @param shape Shape to retrieve geometry from.
      */
-    public static getGeometry(shape: azmaps.Shape): azmaps.data.Geometry {
+    public static getGeometry(shape: azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): azmaps.data.Geometry {
         if(shape instanceof azmaps.Shape){
             //If the shape is a circle, create a polygon from its circle coordinates.
             if (shape.isCircle()) {
@@ -207,6 +207,14 @@ export class Utils {
             }
 
             return shape.toJson().geometry;
+        } else {
+            let p = Utils.getPolygon(shape);
+
+            if(p){
+                return p;
+            }
+
+            return shape.geometry;
         }
 
         return null;

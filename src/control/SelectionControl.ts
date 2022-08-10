@@ -12,7 +12,7 @@ import { RouteRangeControlOptions } from './RouteRangeControlOptions';
 /** The events supported by the `SelectionControl`. */
 export interface SelectionControlEvents {
     /** Event fired when shapes are selected from the specified data source. */
-    dataselected: azmaps.Shape[];
+    dataselected: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
 }
 
 /** A control that lets the user use different methods to select data from the map. */
@@ -112,7 +112,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
     }
 
     /** Updates the data source used for searching/selection. */
-    public setSource(source: azmaps.source.DataSource): void {
+    public setSource(source: azmaps.source.DataSource | azmaps.source.VectorTileSource): void {
         this._options.source = source;
     }
 
@@ -134,8 +134,6 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
         self._drawingManager = dm;
        
         map.events.add('drawingcomplete', dm, self._searchArea);
-
-        //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
         map.events.add('drawingchanged', dm, self._copyDrawnShape);
 
         //Customize the drawing styles.
@@ -206,8 +204,6 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
 
             mapEvents.remove('resize', self._mapResized);  
             map.sources.remove(self._rangeDataSource);
-
-            //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
             mapEvents.remove('drawingchanged', self._drawingManager, self._copyDrawnShape);
 
             if(self._rangeLayers){
@@ -230,10 +226,10 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
      ***************************/
 
     /**
-     * //TODO: WORKAROUND: Remove this when the drawing tools properly support polygon previews.
+     * Maps a copy of a drawn shape.
      * @param shape Shape that is being drawn.
      */
-    private _copyDrawnShape = (shape) => {
+    private _copyDrawnShape = (shape: azmaps.Shape) => {
         this._rangeDataSource.setShapes([new azmaps.Shape(new azmaps.data.Polygon(<azmaps.data.Position[]>shape.getCoordinates()))]);
     }
 
@@ -370,12 +366,25 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
     private _searchArea = (searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape) => {
         const self = this;
 
-        self.clear();
+        if(!self._options.persistSearchArea){
+            self.clear();
+        }
 
         const source = self._options.source;
 
         if(source && searchArea){
-            self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(source.getShapes(), searchArea));
+            let shapes = [];
+
+            if(source instanceof azmaps.source.DataSource) {
+                shapes = source.getShapes();
+            } else if (source instanceof azmaps.source.VectorTileSource) {
+                //@ts-ignore
+                shapes = map.map.querySourceFeatures(source.getId(), {
+                    sourceLayer: self.getOptions().sourceLayer
+                });
+            }
+
+            self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(shapes, searchArea));
         }
 
         //Allow a bit of a delay before removing the drawn area.

@@ -60,7 +60,9 @@
                     style: 'auto',
                     //selectionModes: ['circle', 'time']
                     //shapeSelectionMode: 'point'
-                    source: datasource
+                    source: datasource,
+                    persistSearchArea: true,
+                    fillOpacity: 0
                 });   
                 
                 //Add an event that tells the user how many shapes where selected.
@@ -72,8 +74,7 @@
                 map.controls.add([
                     //Optional. Add the map style control so we can see how the custom control reacts.
                     new atlas.control.StyleControl({
-                        style: 'auto',
-                        persistSearchArea: true
+                        style: 'auto'
                     }),
 
                     //Add the selection control to the map.

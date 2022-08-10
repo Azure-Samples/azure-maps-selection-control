@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Select shapes with selection control - Azure Maps Web SDK Samples</title>
+    <title>Query vector tiles with selection control - Azure Maps Web SDK Samples</title>
 
     <meta charset="utf-8" />
 	<link rel="shortcut icon" href="/favicon.ico"/>
     <meta http-equiv="x-ua-compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="This sample shows how to use the selection control with a data source of polygons." />
+    <meta name="description" content=" This sample shows how to use the selection control to query data from a vector tile source rendered on the map. " />
     <meta name="keywords" content="Microsoft maps, maps, map, API, SDK, GIS, custom, control, custom control, datasource, data source" />
     <meta name="author" content="Microsoft Azure Maps" />
 
@@ -32,9 +32,9 @@
         function GetMap() {
             //Initialize a map instance.
             map = new atlas.Map('myMap', {
-                center: [-110, 50],
-                zoom: 2,
-                style: 'grayscale_light',
+                center: [-74, 40.723],
+                zoom: 12,
+                style: 'grayscale_dark',
                 view: 'Auto',
 				
 		        //Add your Azure Maps key to the map SDK. Get an Azure Maps key at https://azure.com/maps. NOTE: The primary key should be used as the key.
@@ -46,34 +46,65 @@
 
             //Wait until the map resources are ready.
             map.events.add('ready', function () {        
-                //Create a data source and add it to the map.
-                datasource = new atlas.source.DataSource();
+                 //Create a vector tile source and add it to the map.
+                 datasource = new atlas.source.VectorTileSource(null, {
+                    tiles: ['https://{azMapsDomain}/traffic/incident/tile/pbf?api-version=1.0&zoom={z}&x={x}&y={y}'],
+                    maxZoom: 22
+                });
                 map.sources.add(datasource);
-
-                //Import the GeoJSON data into the data source. Capture the point data after it has loaded for quick lookups later.
-                datasource.importDataFromUrl(geojsonFeed);
 
                 //Create layers to render the shapes.
                 map.layers.add([
-                    new atlas.layer.PolygonLayer(datasource, null, {
-                        filter: ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']]
+                    //Create a layer for clustered points.
+                    new atlas.layer.SymbolLayer(datasource, null, {
+                        //The name of the data layer within the data source to pass into this rendering layer.
+                        sourceLayer: 'Traffic incident POI',
+
+                        textOptions: {
+                            textField:  ['get', 'cluster_size'],
+                            
+                            //Offset the text so that it appears on top of the icon.
+                            offset: [0, -1],
+
+                            color: 'white'
+                        },
+
+                        //Only rendered data points which have a cluster_size property.
+                        filter: ['has', 'cluster_size']
                     }),
 
-                    new atlas.layer.LineLayer(datasource, null, {
-                        filter: ['any', ['==', ['geometry-type'], 'LineString'], ['==', ['geometry-type'], 'MultiLineString']]
-                    }),
-
+                    //Create a layer for individual incident points.
                     new atlas.layer.BubbleLayer(datasource, null, {
-                        filter: ['any', ['==', ['geometry-type'], 'Point'], ['==', ['geometry-type'], 'MultiPoint']]
+                        //The name of the data layer within the data source to pass into this rendering layer.
+                        sourceLayer: 'Traffic incident POI',
+
+                        //Color the bubble based on the magnitude of the incident.
+                        color: [
+                            'match',
+                            ['get', 'magnitude'],
+                            1, 'green',	    //Minor
+                            2, 'orange',	//Moderate
+                            3, 'red',		//Major
+                            'gray'			//Unknown or undefined
+                        ],
+
+                        //Filter out clustered points from this layer.
+                        filter: ['all', ['!', ['has', 'cluster_size']]]//, ['!', ['get', 'poi_type'], 'end_poi']]
                     })
                 ]);                
 
                 var control = new atlas.control.SelectionControl({
+                    source: datasource,
+
+                    //Set the source layer to query in the vector tile source.
+                    sourceLayer: 'Traffic incident POI',
+
                     //Allow any shape to be selected.
                     shapeSelectionMode: 'any',
-                    source: datasource,
                     persistSearchArea: true,
-                    fillOpacity: 0
+                    fillOpacity: 0,
+                    strokeWidth: 2,
+                    style: 'dark'
                 });   
                 
                 map.events.add('dataselected', control, function(selectedShapes){
@@ -100,10 +131,11 @@
     <div id="myMap" style="position:relative;width:100%;min-width:290px;height:600px;"></div>
 
     <fieldset style="width:calc(100% - 30px);min-width:290px;margin-top:10px;">
-        <legend><h1 style="font-size:16px">Select shapes with selection control</h1></legend>        
-        This sample shows how to use the selection control with a data source of polygons.
-        By default any type of shape can be selected. Use the "shapeSelectionMode" option of the selection control to limit the type of shapes that can be selected.
-        Press the pointer button in the top right corner of the map to choose a selection mode, then draw on the map.  
+        <legend><h1 style="font-size:16px">Query vector tiles with selection control</h1></legend>        
+        This sample shows how to use the selection control to query data from a vector tile source rendered on the map. 
+        In this case traffic incident data is rendered as clusters and points on the map using bubble and symbol layers.
+        When using a vector tile source, a source layer must be set in the selection control so that it knows which data layer in the tiles to query. 
+        Only shapes that are rendered in the current map view would be queried when using a vector tile source.
         This samples uses the open source <a href="https://github.com/Azure-Samples/azure-maps-selection-control/" target="_blank">Azure Maps Selection Control module</a>
     </fieldset>
 </body>

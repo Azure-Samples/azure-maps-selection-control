@@ -37,18 +37,18 @@ export class MapMath {
      * @param shapes Data source or array of shapes with point geometries to filter. Any non-Point geometry shapes will be ignored.
      * @param searchArea The search area to search within.
      */
-    public static shapePointsWithinPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): azmaps.Shape[] {
+    public static shapePointsWithinPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] {
         return MapMath.shapesIntersectPolygon(shapes, searchArea, 'point');
     }
 
     /**
      * Gets all shapes that are intersect a polygon search area     
-     * @param shapes Data source or array of shapes with geometries to filter.
+     * @param shapes Data source or array of shapes or GeoJSON features with geometries to filter.
      * @param searchArea The polygon search area to check for intersection with.
      * @param shapeSelectionMode Limits what type of shapes can be selected.
      */
-    public static shapesIntersectPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape, shapeSelectionMode?: ShapeSelectionMode | string): azmaps.Shape[] {
-        let results: azmaps.Shape[] = [];
+    public static shapesIntersectPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape, shapeSelectionMode?: ShapeSelectionMode | string): (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] {
+        let results: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] = [];
 
         if (shapes && searchArea) {
 
@@ -64,7 +64,7 @@ export class MapMath {
             let idLoookupTable = {};
 
             let id: string | number;
-            let s: azmaps.Shape;
+            let s: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape);
             let g: azmaps.data.Geometry;
 
             let poly = Utils.getPolygon(searchArea);
@@ -75,24 +75,22 @@ export class MapMath {
 
             for (let i = 0, len = sourceShapes.length; i < len; i++) {
                 s = sourceShapes[i];
+                g = Utils.getGeometry(s);
 
-                if (s.getType() === 'Point') {
+                if(g.type === 'Point') {
                     if(allowPoints){
-                        id = s.getId();
+                        id = s instanceof azmaps.Shape ? s.getId() : s.id;
                         idLoookupTable[id] = s;
-                        points.push(new azmaps.data.Feature(new azmaps.data.Point(<azmaps.data.Position>s.getCoordinates()), null, id));
-                    }
-                } else {
-                    g = Utils.getGeometry(s);
 
-                    if (
+                        points.push(new azmaps.data.Feature(<azmaps.data.Point>g, {}, id));
+                    }
+                } else if (
                         //Features are different types, so need to do a more indepth analysis.
                         (g.type.indexOf('Line') > -1 && allowLines && this._isLineInPoly(<azmaps.data.LineString>g, poly)) ||
                         (g.type.indexOf('Polygon') > -1 && allowPolygons && this._isPolyInPoly(<azmaps.data.Polygon>g, poly))
                     ) {
                         results.push(s);
-                    }
-                }
+                     }
             }
 
             if(allowPoints){

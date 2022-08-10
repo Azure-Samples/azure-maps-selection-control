@@ -8,6 +8,8 @@ Namespace: `atlas.control`
 
 A control that provides a form for requesting a route range. Adds a marker to the map to select an origin location. Recommended to be used with `non-fixed` position when adding to map.
 
+**Note:** A vector tile source can be queried using this control, but will only retrieve the features that have been rendered within the current map view.
+
 **Contstructor**
 
 > `SelectionControl(options?: SelectionControlOptions)`
@@ -20,13 +22,13 @@ A control that provides a form for requesting a route range. Adds a marker to th
 | `dispose()` | | Disposes the control. |
 | `getDrawingManager()` | `atlas.drawing.DrawingManager` | Gets the underlying drawing manager of the selection control. |
 | `getOptions()` | `SelectionControlOptions` | Gets the options of the control. |
-| `setSource(source: atlas.source.DataSource)` | | Updates the data source used for searching/selection. |
+| `setSource(source: atlas.source.DataSource \| atlas.source.VectorTileSource)` | | Updates the data source used for searching/selection. |
 
 **Events**
 
 | Name | Return type | Description |
 |------|-------------|-------------|
-| `dataselected` | `atlas.Shape[]` | Event fired when shapes are selected from the specified data source. |
+| `dataselected` | `(atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape[]` | Event fired when shapes are selected from the specified data source. |
 
 **Usage**
 
@@ -79,7 +81,8 @@ Options for the SelectionControlOptions.
 | `strokeWidth` | `number` | The width of the outline of the search area: Default: `1` |
 | `selectionModes` | `SelectionControlMode[]` \| `'all'` | The selection modes to display in the selection control. Default: `'all'` |
 | `shapeSelectionMode` | `ShapeSelectionMode` | Specifies the type of shapes to select from the data source. Default: `'any'` |
-| `source` | `atlas.source.DataSource` | The data source to query data from.  |
+| `source` | `atlas.source.DataSource` \| `atlas.source.VectorTileSource` | The data source to query data from.  |
+| `sourceLayer` | `string` | **Required** when the source of the layer is a VectorTileSource. A vector source can have multiple layers within it, this identifies which one to query. Prohibited for all other types of sources. |
 | `style` | `atlas.ControlStyle` | The style of the control. Can be; `light`, `dark`, or `auto`. When set to auto, the style will change based on the map style. Overridden if device is in high contrast mode. Default `light`. |
 
 ### ShapeSelectionMode enum
@@ -205,7 +208,7 @@ The following static functions have been added to the `atlas.math` namespace.
 |------|-------------|-------------|
 | `convertWeight(weight: number, fromUnits: string \| WeightUnits, toUnits: string \| WeightUnits, decimals?: number)` | `number` | Converts a weight value from one unit to another. Supported units: kilograms, pounds, metricTon, longTon, shortTon. |
 | `pointsWithinPolygon(points: atlas.data.Feature<atlas.data.Point, any>[], searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.data.Feature<atlas.data.Point, any>[]` | Gets all point features that are within a polygon. |
-| `shapePointsWithinPolygon(shapes: atlas.Shape[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `atlas.Shape[]` | Gets all shapes that have point features that are within a polygon. |
-| `shapesIntersectPolygon(shapes: atlas.Shape[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape, shapeSelectionMode?: ShapeSelectionMode | string)` | `atlas.Shape[]` | Gets all shapes that are intersect a polygon search area. Optionally limit the type of shapes that are selected. |
+| `shapePointsWithinPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> \| atlas.Shape)[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape)` | `(azmaps.data.Feature<azmaps.data.Geometry, any> \| atlas.Shape)[]` | Gets all shapes that have point features that are within a polygon. |
+| `shapesIntersectPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> \| atlas.Shape)[] \| atlas.source.DataSource, searchArea: atlas.data.Polygon \| atlas.data.MultiPolygon \| atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape, shapeSelectionMode?: ShapeSelectionMode | string)` | `(azmaps.data.Feature<azmaps.data.Geometry, any> \| atlas.Shape)[]` | Gets all shapes that are intersect a polygon search area. Optionally limit the type of shapes that are selected. |
 
  

@@ -13,15 +13,20 @@ products:
 
 An Azure Maps Web SDK module that provides controls for selecting data in a data source using drawing tools or by requesting a route range polygon. By default it will select any geometry that intersects the search area. Use the `shapeSelectionMode` to limit the type of geometries that are selected from the data source.
 
+**Note:** A vector tile source can be queried using this control, but will only retrieve the features that have been rendered within the current map view.
+
 This module requires the Azure Maps drawing tools module to also be loaded in the app. 
 
 **Samples**
 
-[Selection control](https://azuremapscodesamples.azurewebsites.net/?sample=Selection%20control)
-<br/>[<img src="https://github.com/Azure-Samples/AzureMapsCodeSamples/raw/master/AzureMapsCodeSamples/SiteResources/screenshots/Selection-control.jpg" height="200px">](https://azuremapscodesamples.azurewebsites.net/?sample=Selection%20control)
+[Selection control](https://samples.azuremaps.com/?search=selection&sample=selection-control)
+<br/>[<img src="https://samples.azuremaps.com/controls/selection-control/screenshot.jpg" height="200px">](https://samples.azuremaps.com/?search=selection&sample=selection-control)
 
-[Route range control](https://azuremapscodesamples.azurewebsites.net/?sample=Route%20range%20control)
-<br/>[<img src="https://github.com/Azure-Samples/AzureMapsCodeSamples/raw/master/AzureMapsCodeSamples/SiteResources/screenshots/Route-range-control.jpg" height="200px">](https://azuremapscodesamples.azurewebsites.net/?sample=Route%20range%20control)
+[Route range control](https://samples.azuremaps.com/?search=route%20range&sample=route-range-control)
+<br/>[<img src="https://samples.azuremaps.com/controls/route-range-control/screenshot.jpg" height="200px">](https://samples.azuremaps.com/?search=route%20range&sample=route-range-control)
+
+[Select shapes with selection control](https://samples.azuremaps.com/?search=selection&sample=select-shapes-with-selection-control)
+<br/>[<img src="https://samples.azuremaps.com/controls/select-shapes-with-selection-control/screenshot.jpg" height="200px">](https://samples.azuremaps.com/?search=selection&sample=select-shapes-with-selection-control)
 
 
 ## Getting started

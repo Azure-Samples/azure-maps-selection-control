@@ -1,4 +1,4 @@
-import * as azmaps from "azure-maps-control";
+import * as azmaps from 'azure-maps-control';
 import { RouteRangeControlOptions } from './RouteRangeControlOptions';
 import { SelectionControlMode } from '../Enums/SelectionControlMode';
 import { ShapeSelectionMode } from 'src/Enums/ShapeSelectionMode';
@@ -16,7 +16,14 @@ export interface SelectionControlOptions {
     /**
      * The data source to query data from. 
      */
-    source?: azmaps.source.DataSource;
+    source?: azmaps.source.DataSource | azmaps.source.VectorTileSource;
+
+    /**
+     * Required when the source of the layer is a VectorTileSource. 
+     * A vector source can have multiple layers within it, this identifies which one to query. 
+     * Prohibited for all other types of sources.
+     */
+    sourceLayer?: string;
 
     /** The selection modes to display in the selection control. */
     selectionModes?: SelectionControlMode[] | 'all';

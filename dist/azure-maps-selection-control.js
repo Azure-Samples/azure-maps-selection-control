@@ -1,4 +1,6 @@
 /*
+azure-maps-selection-control Version: 0.0.3
+
 MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -26046,7 +26048,13 @@ MIT License
                 }
                 return shape.toJson().geometry;
             }
-            return null;
+            else {
+                var p = Utils.getPolygon(shape);
+                if (p) {
+                    return p;
+                }
+                return shape.geometry;
+            }
         };
         /** Number format for en-US decimal value numbers with no comma groupings. */
         Utils.USNumberFormat = new Intl.NumberFormat('en-US', { useGrouping: false }).format;
@@ -26083,7 +26091,7 @@ MIT License
         };
         /**
          * Gets all shapes that are intersect a polygon search area
-         * @param shapes Data source or array of shapes with geometries to filter.
+         * @param shapes Data source or array of shapes or GeoJSON features with geometries to filter.
          * @param searchArea The polygon search area to check for intersection with.
          * @param shapeSelectionMode Limits what type of shapes can be selected.
          */
@@ -26106,21 +26114,19 @@ MIT License
                 var allowPolygons = shapeSelectionMode === 'polygon' || shapeSelectionMode === 'any';
                 for (var i = 0, len = sourceShapes.length; i < len; i++) {
                     s = sourceShapes[i];
-                    if (s.getType() === 'Point') {
+                    g = Utils.getGeometry(s);
+                    if (g.type === 'Point') {
                         if (allowPoints) {
-                            id = s.getId();
+                            id = s instanceof azmaps.Shape ? s.getId() : s.id;
                             idLoookupTable_1[id] = s;
-                            points.push(new azmaps.data.Feature(new azmaps.data.Point(s.getCoordinates()), null, id));
+                            points.push(new azmaps.data.Feature(g, {}, id));
                         }
                     }
-                    else {
-                        g = Utils.getGeometry(s);
-                        if (
-                        //Features are different types, so need to do a more indepth analysis.
-                        (g.type.indexOf('Line') > -1 && allowLines && this._isLineInPoly(g, poly)) ||
-                            (g.type.indexOf('Polygon') > -1 && allowPolygons && this._isPolyInPoly(g, poly))) {
-                            results.push(s);
-                        }
+                    else if (
+                    //Features are different types, so need to do a more indepth analysis.
+                    (g.type.indexOf('Line') > -1 && allowLines && this._isLineInPoly(g, poly)) ||
+                        (g.type.indexOf('Polygon') > -1 && allowPolygons && this._isPolyInPoly(g, poly))) {
+                        results.push(s);
                     }
                 }
                 if (allowPoints) {
@@ -30341,7 +30347,7 @@ MIT License
              * Private Methods
              ***************************/
             /**
-             * //TODO: WORKAROUND: Remove this when the drawing tools properly support polygon previews.
+             * Maps a copy of a drawn shape.
              * @param shape Shape that is being drawn.
              */
             _this._copyDrawnShape = function (shape) {
@@ -30357,10 +30363,22 @@ MIT License
             /** Search within an polygon area. */
             _this._searchArea = function (searchArea) {
                 var self = _this;
-                self.clear();
+                if (!self._options.persistSearchArea) {
+                    self.clear();
+                }
                 var source = self._options.source;
                 if (source && searchArea) {
-                    self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(source.getShapes(), searchArea));
+                    var shapes = [];
+                    if (source instanceof azmaps.source.DataSource) {
+                        shapes = source.getShapes();
+                    }
+                    else if (source instanceof azmaps.source.VectorTileSource) {
+                        //@ts-ignore
+                        shapes = map.map.querySourceFeatures(source.getId(), {
+                            sourceLayer: self.getOptions().sourceLayer
+                        });
+                    }
+                    self._invokeEvent('dataselected', MapMath.shapesIntersectPolygon(shapes, searchArea));
                 }
                 //Allow a bit of a delay before removing the drawn area.
                 self._drawingManager.setOptions({ mode: 'idle' });
@@ -30427,7 +30445,6 @@ MIT License
             var dm = new azmdraw.drawing.DrawingManager(map);
             self._drawingManager = dm;
             map.events.add('drawingcomplete', dm, self._searchArea);
-            //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
             map.events.add('drawingchanged', dm, self._copyDrawnShape);
             //Customize the drawing styles.
             var l = dm.getLayers();
@@ -30483,7 +30500,6 @@ MIT License
                 }
                 mapEvents.remove('resize', self._mapResized);
                 map.sources.remove(self._rangeDataSource);
-                //TODO: WORKAROUND: Remove the following event when the drawing tools properly support polygon preview.
                 mapEvents.remove('drawingchanged', self._drawingManager, self._copyDrawnShape);
                 if (self._rangeLayers) {
                     map.layers.remove(self._rangeLayers);

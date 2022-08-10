@@ -69,7 +69,7 @@ declare namespace atlas {
         /** The events supported by the `SelectionControl`. */
         export interface SelectionControlEvents {
             /** Event fired when shapes are selected from the specified data source. */
-            dataselected: azmaps.Shape[];
+            dataselected: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
         }
 
         /** A control that lets the user use different methods to select data from the map. */
@@ -103,7 +103,7 @@ declare namespace atlas {
             public getOptions(): SelectionControlOptions;
 
             /** Updates the data source used for searching/selection. */
-            public setSource(source: azmaps.source.DataSource): void;
+            public setSource(source: azmaps.source.DataSource | azmaps.source.VectorTileSource): void;
 
             /**
              * Action to perform when the control is added to the map.
@@ -133,15 +133,15 @@ declare namespace atlas {
          * @param shapes Data source or array of shapes with point geometries to filter. Any non-Point geometry shapes will be ignored.
          * @param searchArea The search area to search within.
          */
-        export function shapePointsWithinPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): azmaps.Shape[];
+        export function shapePointsWithinPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape): (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
 
         /**
          * Gets all shapes that are intersect a polygon search area     
-         * @param shapes Data source or array of shapes with geometries to filter.
+         * @param shapes Data source or array of shapes or GeoJSON features with geometries to filter.
          * @param searchArea The polygon search area to check for intersection with.
          * @param shapeSelectionMode Limits what type of shapes can be selected.
          */
-        export function shapesIntersectPolygon(shapes: azmaps.Shape[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape, shapeSelectionMode?: ShapeSelectionMode | string): azmaps.Shape[];
+        export function shapesIntersectPolygon(shapes: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[] | azmaps.source.DataSource, searchArea: azmaps.data.Polygon | azmaps.data.MultiPolygon | azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape, shapeSelectionMode?: ShapeSelectionMode | string): (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
 
         /**
          * Converts a weight value from one unit to another.
@@ -198,7 +198,14 @@ declare namespace atlas {
         /**
          * The data source to query data from. 
          */
-        source?: azmaps.source.DataSource;
+        source?: azmaps.source.DataSource | azmaps.source.VectorTileSource;
+
+        /**
+         * Required when the source of the layer is a VectorTileSource. 
+         * A vector source can have multiple layers within it, this identifies which one to query. 
+         * Prohibited for all other types of sources.
+         */
+        sourceLayer?: string;
 
         /** The selection modes to display in the selection control. */
         selectionModes?: SelectionControlMode[] | 'all';
@@ -297,7 +304,7 @@ declare module "azure-maps-control" {
          * @param target The class to add the event for.
          * @param callback The event handler callback.
          */
-        add(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: azmaps.Shape[]) => void): void;
+        add(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[]) => void): void;
 
         /**
          * Adds an event to a class once.
@@ -305,7 +312,7 @@ declare module "azure-maps-control" {
          * @param target The class to add the event for.
          * @param callback The event handler callback.
          */
-        addOnce(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: azmaps.Shape[]) => void): void;
+        addOnce(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[]) => void): void;
          
         /**
          * Adds an event to a class.
