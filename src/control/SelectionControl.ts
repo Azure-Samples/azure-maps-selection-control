@@ -1,4 +1,4 @@
-import atlas, * as azmaps from 'azure-maps-control';
+import * as azmaps from 'azure-maps-control';
 import * as azmdraw from 'azure-maps-drawing-tools';
 import { SelectionControlOptions as SelectionControlOptions } from './SelectionControlOptions';
 import { MapMath } from '../extensions/MapMath';
