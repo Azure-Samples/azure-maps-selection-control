@@ -1,4 +1,4 @@
-import * as azmaps from 'azure-maps-control';
+import atlas, * as azmaps from 'azure-maps-control';
 import * as azmdraw from 'azure-maps-drawing-tools';
 import { SelectionControlOptions as SelectionControlOptions } from './SelectionControlOptions';
 import { MapMath } from '../extensions/MapMath';
@@ -13,6 +13,9 @@ import { RouteRangeControlOptions } from './RouteRangeControlOptions';
 export interface SelectionControlEvents {
     /** Event fired when shapes are selected from the specified data source. */
     dataselected: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
+
+    /** Event fired when a search area has been created. */
+    searchareacreated: azmaps.data.Polygon | azmaps.data.MultiPolygon;
 }
 
 /** A control that lets the user use different methods to select data from the map. */
@@ -372,7 +375,9 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
 
         const source = self._options.source;
 
-        if(source && searchArea){
+        if(source && searchArea){            
+            self._invokeEvent('searchareacreated', (searchArea instanceof azmaps.Shape || searchArea.type === 'Feature') ? <azmaps.data.Polygon>Utils.getGeometry(<azmaps.Shape>searchArea) : <azmaps.data.Polygon>searchArea);
+
             let shapes = [];
 
             if(source instanceof azmaps.source.DataSource) {

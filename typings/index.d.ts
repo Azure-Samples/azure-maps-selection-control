@@ -70,6 +70,9 @@ declare namespace atlas {
         export interface SelectionControlEvents {
             /** Event fired when shapes are selected from the specified data source. */
             dataselected: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[];
+
+            /** Event fired when a search area has been created. */
+            searchareacreated: azmaps.data.Polygon | azmaps.data.MultiPolygon;
         }
 
         /** A control that lets the user use different methods to select data from the map. */
@@ -313,7 +316,23 @@ declare module "azure-maps-control" {
          * @param callback The event handler callback.
          */
         addOnce(eventType: "dataselected", target: atlas.control.SelectionControl, callback: (e: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[]) => void): void;
-         
+        
+        /**
+         * Adds an event to a class.
+         * @param eventType The event name.
+         * @param target The class to add the event for.
+         * @param callback The event handler callback.
+         */
+        add(eventType: "searchareacreated", target: atlas.control.SelectionControl, callback: (e: azmaps.data.Polygon | azmaps.data.MultiPolygon) => void): void;
+
+        /**
+         * Adds an event to a class once.
+         * @param eventType The event name.
+         * @param target The class to add the event for.
+         * @param callback The event handler callback.
+         */
+        addOnce(eventType: "searchareacreated", target: atlas.control.SelectionControl, callback: (e: azmaps.data.Polygon | azmaps.data.MultiPolygon) => void): void;
+
         /**
          * Adds an event to a class.
          * @param eventType The event name.

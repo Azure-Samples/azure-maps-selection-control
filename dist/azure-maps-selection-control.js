@@ -30368,6 +30368,7 @@ MIT License
                 }
                 var source = self._options.source;
                 if (source && searchArea) {
+                    self._invokeEvent('searchareacreated', (searchArea instanceof azmaps.Shape || searchArea.type === 'Feature') ? Utils.getGeometry(searchArea) : searchArea);
                     var shapes = [];
                     if (source instanceof azmaps.source.DataSource) {
                         shapes = source.getShapes();

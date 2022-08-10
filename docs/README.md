@@ -29,6 +29,7 @@ A control that provides a form for requesting a route range. Adds a marker to th
 | Name | Return type | Description |
 |------|-------------|-------------|
 | `dataselected` | `(atlas.data.Feature<atlas.data.Geometry, any> \| atlas.Shape[]` | Event fired when shapes are selected from the specified data source. |
+| `searchareacreated` | `azmaps.data.Polygon` \| `azmaps.data.MultiPolygon` | Event fired when a search area has been created. |
 
 **Usage**
 

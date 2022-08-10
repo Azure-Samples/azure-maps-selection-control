@@ -30,6 +30,22 @@ declare module "azure-maps-control" {
          * @param callback The event handler callback.
          */
         addOnce(eventType: "dataselected", target: SelectionControl, callback: (e: (azmaps.data.Feature<azmaps.data.Geometry, any> | azmaps.Shape)[]) => void): void;
+
+        /**
+         * Adds an event to a class.
+         * @param eventType The event name.
+         * @param target The class to add the event for.
+         * @param callback The event handler callback.
+         */
+        add(eventType: "searchareacreated", target: SelectionControl, callback: (e: azmaps.data.Polygon | azmaps.data.MultiPolygon) => void): void;
+
+        /**
+         * Adds an event to a class once.
+         * @param eventType The event name.
+         * @param target The class to add the event for.
+         * @param callback The event handler callback.
+         */
+        addOnce(eventType: "searchareacreated", target: SelectionControl, callback: (e: azmaps.data.Polygon | azmaps.data.MultiPolygon) => void): void;
                  
         /**
          * Adds an event to a class.

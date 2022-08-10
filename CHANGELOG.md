@@ -8,6 +8,7 @@
 - Support for vector tile sources.
 - Support for extend GeoJSON Circle feature.
 - Ability to persist the drawn shape.
+- Added `searchareacreated` event to selection control.
 
 <a name="0.0.2"></a>
 # 0.0.2 (2020-11-30)
