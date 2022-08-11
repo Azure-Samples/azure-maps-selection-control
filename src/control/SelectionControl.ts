@@ -26,6 +26,7 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
      ***************************/
 
     private _options: SelectionControlOptions = {
+        container: null,
         style: azmaps.ControlStyle.light,
         selectionModes: 'all',
         fillColor: '#F2C811',
@@ -175,6 +176,14 @@ export class SelectionControl extends azmaps.internal.EventEmitter<SelectionCont
             self._styler.updateMap(map);
         } else {
             self._styler = new ControlStyler(self._container, map, opts.style || 'light');
+        }
+
+        //If a container is specified, move it to the container once the map has loaded the control. 
+        if(opts.container && opts.container !== '') {
+            setTimeout(()=> {
+                const c = (typeof opts.container === 'string')? document.getElementById(opts.container): opts.container;
+                c.appendChild(this._container);
+            }, 10);
         }
 
         return self._container;

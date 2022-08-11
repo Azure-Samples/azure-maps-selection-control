@@ -9,6 +9,7 @@
 - Support for extend GeoJSON Circle feature.
 - Ability to persist the drawn shape.
 - Added `searchareacreated` event to selection control.
+- Added ability for selection control to be loaded into a container.
 
 <a name="0.0.2"></a>
 # 0.0.2 (2020-11-30)

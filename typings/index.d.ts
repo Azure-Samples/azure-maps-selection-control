@@ -192,6 +192,12 @@ declare namespace atlas {
     export interface SelectionControlOptions {
 
         /**
+        * The id or instance of a HTML element in which the control should be added to.
+        * If not specified, the control will be added to the map.
+        */
+       container: string | HTMLElement;
+
+        /**
         * The style of the control. Can be; light, dark, or auto. When set to auto, the style will change based on the map style.
         * Overridden if device is in high contrast mode.
         * @default light

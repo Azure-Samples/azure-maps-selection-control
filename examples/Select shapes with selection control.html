@@ -73,7 +73,8 @@
                     shapeSelectionMode: 'any',
                     source: datasource,
                     persistSearchArea: true,
-                    fillOpacity: 0
+                    fillOpacity: 0,
+                    container: 'test'
                 });   
                 
                 map.events.add('dataselected', control, function(selectedShapes){
@@ -106,5 +107,7 @@
         Press the pointer button in the top right corner of the map to choose a selection mode, then draw on the map.  
         This samples uses the open source <a href="https://github.com/Azure-Samples/azure-maps-selection-control/" target="_blank">Azure Maps Selection Control module</a>
     </fieldset>
+
+    <div id="test"></div>
 </body>
 </html>

@@ -30330,6 +30330,7 @@ MIT License
              * Private Properties
              ***************************/
             _this._options = {
+                container: null,
                 style: azmaps.ControlStyle.light,
                 selectionModes: 'all',
                 fillColor: '#F2C811',
@@ -30343,9 +30344,6 @@ MIT License
             };
             _this._hasMouse = false;
             _this._hasFocus = false;
-            /****************************
-             * Private Methods
-             ***************************/
             /**
              * Maps a copy of a drawn shape.
              * @param shape Shape that is being drawn.
@@ -30477,6 +30475,9 @@ MIT License
             else {
                 self._styler = new ControlStyler(self._container, map, opts.style || 'light');
             }
+            setTimeout(function () {
+                self._updateContainer();
+            }, 10);
             return self._container;
         };
         /**
@@ -30512,6 +30513,16 @@ MIT License
                 self._drawingManager = null;
             }
             self._map = null;
+        };
+        /****************************
+         * Private Methods
+         ***************************/
+        SelectionControl.prototype._updateContainer = function () {
+            var opts = this._options;
+            if (opts.container && opts.container !== '') {
+                var c = (typeof opts.container === 'string') ? document.getElementById(opts.container) : opts.container;
+                c.appendChild(this._container);
+            }
         };
         /**
          * Create the content of the container.
