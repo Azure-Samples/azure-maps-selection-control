@@ -72,9 +72,10 @@ Options for the SelectionControlOptions.
 
 | Name | Type | Description |
 |------|------|-------------|
-| `markerOptions` | `atlas.HtmlMarkerOptions` | Options for customizing the look of the marker used for selecting the origin location. |
+| `container` | `string` \| `HTMLElement` |  The id or instance of a HTML element in which the control should be added to. If not specified, the control will be added to the map. | 
 | `fillColor` | `string` | The color to fill the search area with. Default: `'#F2C811'` |
 | `fillOpacity` | `number` | The opacity of the fill color of the search area: Default: `0.5` |
+| `markerOptions` | `atlas.HtmlMarkerOptions` | Options for customizing the look of the marker used for selecting the origin location. |
 | `persistSearchArea` | `boolean` |Specifies if the search area polygon should stay visible after being drawn. Will be removed if the selection control button is pressed again. Default: `false` |
 | `routeRangeMinMapSize` | `[number, number]` | The mininum size of the map in order for route range option to be available. Format: [width, height] Default: `[325, 200]` |
 | `routeRangeOptions` | `RouteRangeControlOptions` | Options for the underlying route range control. |
