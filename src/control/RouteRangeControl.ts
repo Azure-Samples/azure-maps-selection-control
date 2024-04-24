@@ -25,7 +25,7 @@ interface RouteRangeSettings {
     origin?: azmaps.data.Position;
 
      /** The mode of travel for the requested route. If not defined, default is 'car'. */
-    travelMode?: 'pedestrian' | 'bicycle' | 'car' | 'truck';
+    travelMode?: 'car' | 'truck';
 
     /** The type of route range to calculate. */
     selectionArea?: 'time' | 'distance';
@@ -723,13 +723,11 @@ export class RouteRangeControl extends azmaps.internal.EventEmitter<RouteRangeCo
         /*            
             <select>
                 <option value="car" selected>Car</option>
-                <option value="bicycle">Bicycle</option>
-                <option value="pedestrian">Pedestrian</option>
                 <option value="truck">Truck</option>
             </select>
         */
        const travelMode = createElm('select', {
-         selectVals: ['car', 'bicycle', 'pedestrian', 'truck'],
+         selectVals: ['car', 'truck'],
          selected: 'car',
          propName: 'travelMode',
          bindingChanged: (val)=> {
@@ -738,10 +736,6 @@ export class RouteRangeControl extends azmaps.internal.EventEmitter<RouteRangeCo
             let isTruck = false;
 
             switch(val){
-                case 'pedestrian':
-                case 'bicycle':
-                    isVehicle = false;
-                    break;
                 case 'truck':
                     isTruck = true;
                     break; 
